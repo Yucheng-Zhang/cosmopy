@@ -1,2 +1,1 @@
-# cosmoLCDM
-LambdaCDM (flat).
+# cosmopy
