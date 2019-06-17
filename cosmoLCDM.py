@@ -36,15 +36,16 @@ class cosmoLCDM:
         chi_zs = self.z2chi(zs)
         return chi_z * (1. - chi_z / chi_zs)
 
-    def gen_pk(self, kmax, z1, z2):
+    def gen_pk(self, z1, z2, kmax, extrap_kmax=None):
         '''Generate matter power spectrum Pmm(z, k).'''
         pars = camb.CAMBparams()
         pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
                            omch2=(self.Om0-self.Ob0)*self.h**2, TCMB=self.Tcmb0)
         pars.InitPower.set_params(As=self.As, ns=self.ns)
 
-        self.pk = camb.get_matter_power_interpolator(pars, zmin=z1-0.1, zmax=z2+0.1,
+        self.pk = camb.get_matter_power_interpolator(pars, zmin=z1-0.05, zmax=z2+0.05,
                                                      kmax=kmax, nonlinear=True,
-                                                     hubble_units=False, k_hunit=False)
+                                                     hubble_units=False, k_hunit=False,
+                                                     extrap_kmax=extrap_kmax)
 
         print('>> Matter power spectrum function self.pk.P(z,k) generated with CAMB.')
