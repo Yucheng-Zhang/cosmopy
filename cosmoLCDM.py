@@ -43,7 +43,7 @@ class cosmoLCDM:
                            omch2=(self.Om0-self.Ob0)*self.h**2, TCMB=self.Tcmb0)
         pars.InitPower.set_params(As=self.As, ns=self.ns)
 
-        self.pk = camb.get_matter_power_interpolator(pars, zmin=z1-0.05, zmax=z2+0.05,
+        self.pk = camb.get_matter_power_interpolator(pars, zmin=z1, zmax=z2,
                                                      kmax=kmax, nonlinear=True,
                                                      hubble_units=False, k_hunit=False,
                                                      extrap_kmax=extrap_kmax)
