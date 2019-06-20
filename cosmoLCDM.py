@@ -3,6 +3,8 @@ LambdaCDM class.
 '''
 from astropy.cosmology import FlatLambdaCDM
 import camb
+from scipy import interpolate
+import numpy as np
 
 Z_CMB = 1100
 
@@ -29,6 +31,15 @@ class cosmoLCDM:
     def z2chi(self, z):
         '''Get comoving distance in [Mpc] from redshift'''
         return self.cosmo.comoving_distance(z).value
+
+    def gen_chi2z(self, zmin=0, zmax=10, dz=0.001, kind='cubic'):
+        '''Generate comoving distance [Mpc] to redshift function with interpolation.'''
+        zs = np.arange(zmin, zmax+dz, dz)
+        chis = self.z2chi(zs)
+        self.chi2z = interpolate.interp1d(chis, zs, kind=kind,
+                                          bounds_error=True)
+        print(' >> self.chi2z(z) generated for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
+              .format(zmin, zmax, dz, kind))
 
     def w_z(self, z, zs=Z_CMB):
         '''Lensing kernel.'''

@@ -16,4 +16,5 @@ def gen_fg_z(dataz, z1, z2, bins=200):
     fg_z = spi.interp1d(xs, ys, kind='linear',
                         bounds_error=False, fill_value=(0., 0.))
 
+    print('>> Redshift distribution fg genertaed from data.')
     return fg_z
