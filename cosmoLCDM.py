@@ -38,7 +38,7 @@ class cosmoLCDM:
         chis = self.z2chi(zs)
         self.chi2z = interpolate.interp1d(chis, zs, kind=kind,
                                           bounds_error=True)
-        print(' >> self.chi2z(z) generated for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
+        print(' >> self.chi2z(chi) generated for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
               .format(zmin, zmax, dz, kind))
 
     def w_z(self, z, zs=Z_CMB):
