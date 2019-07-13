@@ -70,14 +70,16 @@ class cosmoLCDM:
     # ------ either impossible to calculate directly ------
     # ------ or for fast calculation ------
 
-    def gen_interp_chi2z(self, zmin=0, zmax=10, dz=0.001, kind='cubic'):
+    def gen_interp_chiz(self, zmin=0, zmax=10, dz=0.001, kind='cubic'):
         '''Generate comoving distance [Mpc] to redshift function with interpolation.'''
         zs = np.arange(zmin, zmax+dz, dz)
         chis = self.z2chi(zs)
         self.interp_chi2z = interpolate.interp1d(chis, zs, kind=kind,
                                                  bounds_error=True)
-        print('>> self.interp_chi2z(chi) generated for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
-              .format(zmin, zmax, dz, kind))
+        self.interp_z2chi = interpolate.interp1d(zs, chis, kind=kind,
+                                                 bounds_error=True)
+        print('>> self.interp_chi2z(chi) and self.interp_z2chi(z) generated for z in [{0:g}, {1:g}] \
+               with dz={2:g} interpolated with {3:s}'.format(zmin, zmax, dz, kind))
 
     def gen_interp_D_z(self, zmin=0, zmax=10, dz=0.001, kind='cubic'):
         '''Generate interpolated D(z).'''
