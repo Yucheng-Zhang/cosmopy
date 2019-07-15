@@ -39,6 +39,8 @@ class cosmoLCDM:
 
         self.results = camb.CAMBdata()
 
+        self.CHI_CMB = self.z2chi(Z_CMB)
+
     # ------ basic functions ------
 
     def H_z(self, z):
@@ -63,7 +65,11 @@ class cosmoLCDM:
     def w_z(self, z, zs=Z_CMB):
         '''Lensing kernel.'''
         chi_z = self.z2chi(z)
-        chi_zs = self.z2chi(zs)
+        if zs is Z_CMB:
+            chi_zs = self.CHI_CMB
+        else:
+            chi_zs = self.z2chi(zs)
+
         return chi_z * (1. - chi_z / chi_zs)
 
     # ------ interpolated functions ------
@@ -113,3 +119,13 @@ class cosmoLCDM:
                                               bounds_error=True)
 
         print('>> Matter transfer function self.interp_Tk(k) generated with CAMB.')
+
+    def interp_w_z(self, z, zs=Z_CMB):
+        '''Lensing kernel w/ interpolated z2chi.'''
+        chi_z = self.interp_z2chi(z)
+        if zs is Z_CMB:
+            chi_zs = self.CHI_CMB
+        else:
+            chi_zs = self.interp_z2chi(zs)
+
+        return chi_z * (1. - chi_z / chi_zs)
