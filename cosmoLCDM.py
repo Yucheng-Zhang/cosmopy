@@ -28,7 +28,12 @@ class cosmoLCDM:
 
         self.D_norm = None  # used to normalize D(z=0) to 1
 
-        # for CAMB
+        self.CHI_CMB = self.z2chi(Z_CMB)
+
+    # ------ basic functions ------
+
+    def init_CAMB(self):
+        '''Initialize CAMB parameters.'''
         self.pars = camb.CAMBparams()
         self.pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
                                 omch2=(self.Om0-self.Ob0)*self.h**2, TCMB=self.Tcmb0)
@@ -38,10 +43,6 @@ class cosmoLCDM:
         self.pars.Transfer.high_precision = True
 
         self.results = camb.CAMBdata()
-
-        self.CHI_CMB = self.z2chi(Z_CMB)
-
-    # ------ basic functions ------
 
     def H_z(self, z):
         '''Hubble parameter at redshift z, i.e. H(z)'''
