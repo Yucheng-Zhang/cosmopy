@@ -72,6 +72,15 @@ class cosmoLCDM:
 
         return chi_z * (1. - chi_z / chi_zs)
 
+    def Om_z(self, z):
+        '''Omega_m(z).'''
+        tmp = self.Om0 * np.power(z, 3)
+        return tmp / (tmp + 1 - self.Om0)
+
+    def f_growth_z(self, z):
+        '''Linear growth rate w/ GR.'''
+        return np.power(self.Om_z(z), 0.55)
+
     # ------ interpolated functions ------
     # ------ either impossible to calculate directly ------
     # ------ or for fast calculation ------
@@ -105,7 +114,7 @@ class cosmoLCDM:
 
         print('>> Matter power spectrum self.interp_pk.P(z,k) generated with CAMB.')
 
-    def gen_Tk(self, kmax, kind='cubic'):
+    def gen_interp_Tk(self, kmax, kind='cubic'):
         '''Generate Transfer function T(k).'''
         self.pars.Transfer.kmax = kmax
         self.results.calc_transfers(self.pars)
