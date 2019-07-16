@@ -32,18 +32,6 @@ class cosmoLCDM:
 
     # ------ basic functions ------
 
-    def init_CAMB(self):
-        '''Initialize CAMB parameters.'''
-        self.pars = camb.CAMBparams()
-        self.pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
-                                omch2=(self.Om0-self.Ob0)*self.h**2, TCMB=self.Tcmb0)
-        self.pars.InitPower.set_params(As=self.As, ns=self.ns)
-
-        self.pars.WantTransfer = True
-        self.pars.Transfer.high_precision = True
-
-        self.results = camb.CAMBdata()
-
     def H_z(self, z):
         '''Hubble parameter at redshift z, i.e. H(z)'''
         return self.H0 * self.cosmo.efunc(z)
@@ -108,19 +96,32 @@ class cosmoLCDM:
 
     def gen_interp_pk(self, zmin, zmax, kmax, extrap_kmax=None):
         '''Generate matter power spectrum Pmm(z, k).'''
-        self.interp_pk = camb.get_matter_power_interpolator(self.pars, zmin=zmin, zmax=zmax,
+        pars = camb.CAMBparams()
+        pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
+                           omch2=(self.Om0-self.Ob0)*self.h**2, TCMB=self.Tcmb0)
+        pars.InitPower.set_params(As=self.As, ns=self.ns)
+        self.interp_pk = camb.get_matter_power_interpolator(pars, zmin=zmin, zmax=zmax,
                                                             kmax=kmax, nonlinear=True,
                                                             hubble_units=False, k_hunit=False,
                                                             extrap_kmax=extrap_kmax)
 
-        print('>> Matter power spectrum self.interp_pk.P(z,k) generated with CAMB.')
+        print('>> Matter power spectrum self.interp_pk.P(z, k) generated with CAMB.')
 
     def gen_interp_Tk(self, kmax, kind='cubic'):
         '''Generate Transfer function T(k).'''
-        self.pars.Transfer.kmax = kmax
-        self.results.calc_transfers(self.pars)
+        pars = camb.CAMBparams()
+        pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
+                           omch2=(self.Om0-self.Ob0)*self.h**2, TCMB=self.Tcmb0)
+        pars.InitPower.set_params(As=self.As, ns=self.ns)
 
-        trans_data = self.results.get_matter_transfer_data()
+        pars.WantTransfer = True
+        pars.Transfer.high_precision = True
+        pars.Transfer.kmax = kmax
+
+        results = camb.CAMBdata()
+        results.calc_transfers(pars)
+
+        trans_data = results.get_matter_transfer_data()
         k = trans_data.q
         Tk = trans_data.transfer_data[6, :, 0]
         Tk = Tk / np.amax(Tk)  # normalize
