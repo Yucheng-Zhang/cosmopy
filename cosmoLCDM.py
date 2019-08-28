@@ -74,7 +74,7 @@ class cosmoLCDM:
     # ------ either impossible to calculate directly ------
     # ------ or for fast calculation ------
 
-    def gen_interp_chiz(self, zmin=0, zmax=10, dz=0.001, kind='cubic'):
+    def gen_interp_chiz(self, zmin=0, zmax=10, dz=0.001, kind='linear'):
         '''Generate comoving distance [Mpc] to redshift function with interpolation.'''
         zs = np.arange(zmin, zmax+dz, dz)
         chis = self.z2chi(zs)
@@ -86,7 +86,16 @@ class cosmoLCDM:
         print('>> for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
               .format(zmin, zmax, dz, kind))
 
-    def gen_interp_D_z(self, zmin=0, zmax=10, dz=0.001, kind='cubic'):
+    def gen_interp_H_z(self, zmin=0, zmax=10, dz=0.001, kind='linear'):
+        '''Generate interpolated H(z).'''
+        zs = np.arange(zmin, zmax+dz, dz)
+        Hs = self.H_z(zs)
+        self.interp_H_z = interpolate.interp1d(zs, Hs, kind=kind,
+                                               bounds_error=True)
+        print('>> self.interp_H_z(z) generated for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
+              .format(zmin, zmax, dz, kind))
+
+    def gen_interp_D_z(self, zmin=0, zmax=10, dz=0.001, kind='linear'):
         '''Generate interpolated D(z).'''
         zs = np.arange(zmin, zmax+dz, dz)
         Ds = np.array([self.D_z(z_) for z_ in zs])
@@ -108,7 +117,7 @@ class cosmoLCDM:
 
         print('>> Matter power spectrum self.interp_pk.P(z, k) generated with CAMB.')
 
-    def gen_interp_Tk(self, kmax, kind='cubic'):
+    def gen_interp_Tk(self, kmax, kind='linear'):
         '''Generate Transfer function T(k).'''
         pars = camb.CAMBparams()
         pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
