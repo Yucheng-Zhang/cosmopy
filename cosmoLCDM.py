@@ -63,7 +63,7 @@ class cosmoLCDM:
 
     def Om_z(self, z):
         '''Omega_m(z).'''
-        tmp = self.Om0 * np.power(z, 3)
+        tmp = self.Om0 * np.power(1 + z, 3)
         return tmp / (tmp + 1 - self.Om0)
 
     def f_growth_z(self, z):
