@@ -79,9 +79,9 @@ class cosmoLCDM:
         zs = np.arange(zmin, zmax+dz, dz)
         chis = self.z2chi(zs)
         self.interp_chi2z = interpolate.interp1d(chis, zs, kind=kind,
-                                                 bounds_error=True)
+                                                 bounds_error=False, fill_value='extrapolate')
         self.interp_z2chi = interpolate.interp1d(zs, chis, kind=kind,
-                                                 bounds_error=True)
+                                                 bounds_error=False, fill_value='extrapolate')
         print('>> self.interp_chi2z(chi) and self.interp_z2chi(z) generated')
         print('>> for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
               .format(zmin, zmax, dz, kind))
@@ -91,7 +91,7 @@ class cosmoLCDM:
         zs = np.arange(zmin, zmax+dz, dz)
         Hs = self.H_z(zs)
         self.interp_H_z = interpolate.interp1d(zs, Hs, kind=kind,
-                                               bounds_error=True)
+                                               bounds_error=False, fill_value='extrapolate')
         print('>> self.interp_H_z(z) generated for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
               .format(zmin, zmax, dz, kind))
 
@@ -100,7 +100,7 @@ class cosmoLCDM:
         zs = np.arange(zmin, zmax+dz, dz)
         Ds = np.array([self.D_z(z_) for z_ in zs])
         self.interp_D_z = interpolate.interp1d(zs, Ds, kind=kind,
-                                               bounds_error=True)
+                                               bounds_error=False, fill_value='extrapolate')
         print('>> self.interp_D_z(z) generated for z in [{0:g}, {1:g}] with dz={2:g} interpolated with {3:s}'
               .format(zmin, zmax, dz, kind))
 
