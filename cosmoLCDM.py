@@ -26,7 +26,7 @@ class cosmoLCDM:
         self.cosmo = FlatLambdaCDM(H0=self.H0, Tcmb0=self.Tcmb0, Om0=self.Om0,
                                    Ob0=self.Ob0)
 
-        self.D_norm = None  # used to normalize D(z=0) to 1
+        self.D_z0 = None  # used to normalize D(z=0) to 1
 
         self.CHI_CMB = self.z2chi(Z_CMB)
 
@@ -42,10 +42,10 @@ class cosmoLCDM:
             hp = np.power(self.cosmo.efunc(zp), 3.)
             return (1 + zp) / hp
 
-        if self.D_norm is None:
-            self.D_norm = integrate.quad(kernel, 0, np.Infinity)[0]
+        if self.D_z0 is None:
+            self.D_z0 = integrate.quad(kernel, 0, np.Infinity)[0]
 
-        return self.cosmo.efunc(z) * integrate.quad(kernel, z, np.Infinity)[0] / self.D_norm
+        return self.cosmo.efunc(z) * integrate.quad(kernel, z, np.Infinity)[0] / self.D_z0
 
     def z2chi(self, z):
         '''Get comoving distance in [Mpc] from redshift'''
@@ -117,7 +117,7 @@ class cosmoLCDM:
 
         print('>> Matter power spectrum self.interp_pk.P(z, k) generated with CAMB.')
 
-    def gen_interp_Tk(self, kmax, kind='linear'):
+    def gen_interp_Tk(self, kmax=2, kind='linear'):
         '''Generate Transfer function T(k).'''
         pars = camb.CAMBparams()
         pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
@@ -134,10 +134,10 @@ class cosmoLCDM:
         trans_data = results.get_matter_transfer_data()
         k = trans_data.q
         Tk = trans_data.transfer_data[6, :, 0]
-        Tk = Tk / np.amax(Tk)  # normalize
+        Tk = Tk / Tk[0]  # normalize
 
         self.interp_Tk = interpolate.interp1d(k, Tk, kind=kind,
-                                              bounds_error=True)
+                                              bounds_error=False, fill_value='extrapolate')
 
         print('>> Matter transfer function self.interp_Tk(k) generated with CAMB.')
 
