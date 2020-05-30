@@ -45,7 +45,7 @@ class flatLCDM:
 
         camb_pars.set_matter_power(redshifts=(0.0,), kmax=10.0, nonlinear=True,
                                    accurate_massive_neutrino_transfers=False)
-        camb_pars.set_for_lmax(2500, lens_potential_accuracy=1)
+        camb_pars.set_for_lmax(2500, lens_potential_accuracy=2)
 
         camb_pars.set_accuracy(AccuracyBoost=3.0)
 
@@ -77,9 +77,9 @@ class flatLCDM:
                                               bounds_error=False, fill_value='extrapolate')
         # P(k, z=0)
         Pks_linear = self.camb_results.get_linear_matter_power_spectrum(
-            hubble_units=False, k_hunit=False)[0]
+            hubble_units=False, k_hunit=False)[2][0]
         Pks_nonlin = self.camb_results.get_nonlinear_matter_power_spectrum(
-            hubble_units=False, k_hunit=False)[0]
+            hubble_units=False, k_hunit=False)[2][0]
         self.Pk_linear_interp = interpolate.interp1d(ks, Pks_linear, kind='cubic',
                                                      bounds_error=False, fill_value='extrapolate')
         self.Pk_nonlin_interp = interpolate.interp1d(ks, Pks_nonlin, kind='cubic',
