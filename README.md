@@ -1,4 +1,11 @@
 # cosmopy
 
-- Some useful functions in cosmology, warpped over Astropy and CAMB.
-- See demo.ipynb for examples.
+- Some useful functions in cosmology.
+- Dependencies:
+  - `numpy`, `scipy`
+  - `CAMB`:
+    - https://github.com/cmbant/CAMB
+    - `pip install camb`
+  - `colossus`
+    - https://bdiemer.bitbucket.io/colossus/
+    - `pip install colossus`

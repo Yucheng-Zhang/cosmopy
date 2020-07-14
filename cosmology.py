@@ -135,7 +135,7 @@ class flatLCDM:
         '''D(z), normalized to D(z=0)=1'''
         return self.D_unnorm(z, interp=interp) / self.Dz0
 
-    def f_growth(self, z):
+    def f(self, z):
         '''f(z), linear growth rate w/ GR'''
         return np.power(self.Om(z), 0.55)
 
