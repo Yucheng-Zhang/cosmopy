@@ -13,7 +13,7 @@ from colossus.cosmology import cosmology
 class flatLCDM:
     '''FlatLambdaCDM cosmology.'''
 
-    def __init__(self, cosmoc=None, pars='planck18', As=2.105e-9):
+    def __init__(self, cosmoc=None, pars='planck18', As=2.105e-9, Z_CMB=1090):
 
         # cosmoc is a colossus cosmology instance
         if cosmoc is None:
@@ -34,6 +34,8 @@ class flatLCDM:
 
         self._init_camb()
         self._init_interpolation()
+
+        self.chi_CMB = self.chi(Z_CMB)
 
     def _init_camb(self):
         '''setup CAMB parameters and compute results'''
