@@ -53,6 +53,7 @@ class flatLCDM:
 
         # calculate all results
         self.camb_results = camb.get_results(camb_pars)
+        self.camb_pars = camb_pars
 
     def _init_interpolation(self):
         '''setup interpolation'''
