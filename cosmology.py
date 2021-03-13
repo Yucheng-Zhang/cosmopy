@@ -13,7 +13,7 @@ from colossus.cosmology import cosmology
 class flatLCDM:
     '''FlatLambdaCDM cosmology.'''
 
-    def __init__(self, cosmoc=None, pars='planck18', As=2.105e-9, Z_CMB=1090):
+    def __init__(self, cosmoc=None, pars='planck18', Z_CMB=1090):
 
         # cosmoc is a colossus cosmology instance
         if cosmoc is None:
@@ -29,7 +29,8 @@ class flatLCDM:
         self.Tcmb0 = self.cosmoc.Tcmb0
         self.Neff = self.cosmoc.Neff
         self.ns = self.cosmoc.ns
-        self.As = As
+        self.sigma8 = self.cosmoc.sigma8
+        self.As = None
         self.Dz0 = self.D_unnorm(0.)  # used to normalize D(z=0) to 1
 
         self._init_camb()
@@ -43,17 +44,26 @@ class flatLCDM:
         camb_pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
                                 omch2=(self.Om0 - self.Ob0)*self.h**2, omk=0.0,
                                 TCMB=self.Tcmb0, nnu=self.Neff)
-        camb_pars.InitPower.set_params(As=self.As, ns=self.ns)
+        if self.As is None:
+            As_ = 2.1e-9
+            camb_pars.InitPower.set_params(As=As_, ns=self.ns)
+        else:
+            camb_pars.InitPower.set_params(As=self.As, ns=self.ns)
 
         camb_pars.set_matter_power(redshifts=(0.0,), kmax=10.0, nonlinear=True,
                                    accurate_massive_neutrino_transfers=False)
         camb_pars.set_for_lmax(2500, lens_potential_accuracy=2)
-
+        
         camb_pars.set_accuracy(AccuracyBoost=3.0)
 
         # calculate all results
         self.camb_results = camb.get_results(camb_pars)
         self.camb_pars = camb_pars
+        
+        if self.As is None:
+            sigma8_ = self.camb_results.get_sigma8()[0]
+            self.As = (self.sigma8 / sigma8_)**2 * As_
+            self._init_camb() # rerun with true As
 
     def _init_interpolation(self):
         '''setup interpolation'''
