@@ -9,15 +9,19 @@ from scipy import interpolate, integrate
 import camb
 from colossus.cosmology import cosmology
 
+cosmo_params = {
+    'planck18_TT,TE,EE+lowE':{'flat': True, 'H0': 67.27, 'Om0': 0.3166, 'Ob0': 0.04941, 'sigma8': 0.8120, 'ns': 0.9649}
+}
 
 class flatLCDM:
     '''FlatLambdaCDM cosmology.'''
 
-    def __init__(self, cosmoc=None, pars='planck18', Z_CMB=1090):
+    def __init__(self, cosmoc=None, pcosmo='planck18_TT,TE,EE+lowE', Z_CMB=1090):
 
         # cosmoc is a colossus cosmology instance
         if cosmoc is None:
-            self.cosmoc = cosmology.setCosmology(pars)
+            params = cosmo_params['planck18_TT,TE,EE+lowE']
+            self.cosmoc = cosmology.setCosmology(pcosmo, params)
         else:
             self.cosmoc = cosmoc
 
