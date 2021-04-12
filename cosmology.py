@@ -36,6 +36,8 @@ class flatLCDM:
         self.sigma8 = self.cosmoc.sigma8
         self.As = None
         self.Dz0 = self.D_unnorm(0.)  # used to normalize D(z=0) to 1
+        # curvature
+        self.Ok0 = self.cosmoc.Ok0
 
         self._init_camb()
         self._init_interpolation()
@@ -46,7 +48,7 @@ class flatLCDM:
         '''setup CAMB parameters and compute results'''
         camb_pars = camb.CAMBparams()
         camb_pars.set_cosmology(H0=self.H0, ombh2=self.Ob0*self.h**2,
-                                omch2=(self.Om0 - self.Ob0)*self.h**2, omk=0.0,
+                                omch2=(self.Om0 - self.Ob0)*self.h**2, omk=self.Ok0,
                                 TCMB=self.Tcmb0, nnu=self.Neff)
         if self.As is None:
             As_ = 2.1e-9
