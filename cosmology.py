@@ -103,6 +103,12 @@ class flatLCDM:
                                                      bounds_error=False, fill_value='extrapolate')
         self.Pk_nonlin_interp = interpolate.interp1d(ks, Pks_nonlin, kind='cubic',
                                                      bounds_error=False, fill_value='extrapolate')
+        
+        # P(k, z) with CAMB matter power interpolator
+        self.camb_Pk_interp = camb.get_matter_power_interpolator(camb_pars, zmin=0, zmax=10, kmax=15, nonlinear=False,
+                                                                 hubble_units=False, k_hunit=False)
+        self.camb_Pk_interp_nl = camb.get_matter_power_interpolator(camb_pars, zmin=0, zmax=10, kmax=15, nonlinear=True,
+                                                                    hubble_units=False, k_hunit=False)
 
     # ------ background functions ------
 
@@ -169,7 +175,15 @@ class flatLCDM:
         return self.Tk_interp(k) * self.Tk0
 
     def Pk(self, k, nl=False):
+        '''matter power spectrum at redshift z=0'''
         if nl:
             return self.Pk_nonlin_interp(k)
         else:
             return self.Pk_linear_interp(k)
+    
+    def Pkz(self, k, z, nl=False):
+        '''matter power spectrum at redshift z, using CAMB matter power interpolator'''
+        if nl:
+            return self.camb_Pk_interp_nl(z, k)
+        else:
+            return self.camb_Pk_interp(z, k)
