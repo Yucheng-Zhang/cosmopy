@@ -184,6 +184,6 @@ class flatLCDM:
     def Pkz(self, k, z, nl=False):
         '''matter power spectrum at redshift z, using CAMB matter power interpolator'''
         if nl:
-            return self.camb_Pk_interp_nl(z, k).T
+            return self.camb_Pk_interp_nl.P(z, k).T
         else:
-            return self.camb_Pk_interp(z, k).T
+            return self.camb_Pk_interp.P(z, k).T
